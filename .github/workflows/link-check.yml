@@ -1,4 +1,4 @@
-name: Deployment GitHub Pages
+name: Link checker
 
 on:
   workflow_call:
@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     concurrency:
-      group: site-build-${{ github.ref }}
+      group: link-check-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -32,11 +32,9 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - run: npm ci
-      - run: hugo --minify
+      - run: hugo --baseURL '' --minify
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/actions-hugo' }}
+      - name: Link check
+        uses: untitaker/hyperlink@0.1.27
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          args: public/ --check-anchors

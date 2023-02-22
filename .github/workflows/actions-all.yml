@@ -1,0 +1,20 @@
+name: Site actions
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - actions-hugo  # Set a branch to deploy
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  link-check:
+    # uncomment line below to enable job
+    uses: ./.github/workflows/link-check.yml  
+  site-build:
+    # uncomment line below to enable job
+    uses: ./.github/workflows/site-build.yml
